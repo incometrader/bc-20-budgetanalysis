@@ -1,7 +1,22 @@
 <% include ./partials/header %>
-
-
-<h1> Sign Up Page </h1>
-
+<div class="container auth-page">
+  <h2 class="text-center form-header"> Sign Up </h2>
+  <div class="form-div">
+    <form id="register-form" >
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+        <span id="email_help" class="help-block"></span>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+        <span id="password_help" class="help-block"></span>
+      </div>
+      <button type="submit" class="btn-submit"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Sign up with Email </button>
+    </form>
+  </div>
+  <div id="firebaseui-auth-container"></div>
+</div>
 
 <% include ./partials/footer %>
