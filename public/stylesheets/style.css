@@ -33,6 +33,8 @@ a {
 }
 .form-header {
   margin: 20px;
+  color: #CC3333;
+  font-weight: bold;
 }
 .btn-submit {
   background: #CC3333;
@@ -174,4 +176,17 @@ a {
   color: #CC3333;
   font-weight: bold;
   text-decoration: none;
+}
+.auth-page {
+  height: 100vh;
+  background: #F7F7F7;
+}
+#email_help {
+  color: #CC3333;
+}
+#password_help {
+  color: #CC3333;
+}
+.hr-red {
+  border-top: 1px solid blue;
 }

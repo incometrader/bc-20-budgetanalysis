@@ -1,25 +1,26 @@
 <% include ./partials/header %>
 
-<div class="container auth-page">
+<div class="container-fluid auth-page">
   <h2 class="text-center form-header"> Sign Up </h2>
   <div class="form-div">
     <form id="register-form" >
       <div class="form-group">
         <label for="fname">First Name</label>
-        <input type="text" name="fname" class="form-control" id="fname" placeholder="First Name only" required>
+        <input type="text" name="fname" class="form-control" id="fname" placeholder="Your first name only" required>
       </div>
       <div class="form-group">
         <label for="email">Email Address</label>
-        <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+        <input type="email" name="email" class="form-control" id="email" placeholder="Your email" required>
         <span id="email_help" class="help-block"></span>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+        <input type="password" name="password" class="form-control" id="password" placeholder="Choose a password" required>
         <span id="password_help" class="help-block"></span>
       </div>
       <button type="submit" class="btn-submit"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Sign up with Email </button>
     </form>
+    <hr class="hr-red">
   </div>
   <div id="firebaseui-auth-container"></div>
 </div>

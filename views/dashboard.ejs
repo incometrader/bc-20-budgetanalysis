@@ -1,7 +1,158 @@
-<% include ./partials/header %>
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>My Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/stylesheets/dashboard.css" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/stylesheets/bootstrap-material-design.min.css" />
+    <link rel="stylesheet" href="/stylesheets/ripples.min.css" />
+  </head>
+  <body>
+    <!--Nav Bar Begins-->
+    <div class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">CoolBudget Dashboard</a>
+        </div>
+        <div class="navbar-collapse collapse navbar-inverse-collapse">
+          <!--start nav bar right-->
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">Home</a></li>
+            <li class="active"><a href="#">Dashboard</a></li>
+            <li class="dropdown">
+              <a href="#" data-target="#" class="dropdown-toggle" data-toggle="dropdown">User Menu
+                <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li><a href="#" id="logout-nav">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+          <!--end nav bar right-->
+        </div>
+      </div>
+    </div>
+    <!--Nav bar ends-->
+    
+    <!--Tab begins Here-->
+    <div class="col-md-4">
+      <div class="bs-component">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#income" data-toggle="tab">Profile<div class="ripple-container"></div></a></li>
+          <li class=""><a href="#envelopes" data-toggle="tab">Envelopes<div class="ripple-container"></div></a></li>
+        </ul>
+        <div id="myTabContent" class="tab-content">
+          <div class="tab-pane fade active in" id="income">
+            <p><button class="btn btn-raised btn-danger btn-sm right">Logout</button></p>
+            <h2>Hello User</h2>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                Add income form
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="envelopes">
+            <p><button class="btn btn-raised btn-success btn-sm right" data-toggle="modal" data-target="#complete-dialog">Add Envelope</button></p>
+            <!--START ENVELOPES-->
+            <div id="envelopes-para" class="list-group">
+              <div class="list-group-item">
+                <div class="row-content">
+                  <div class="action-secondary"><a><i class="material-icons">mode edit</i></a></div>
+                  <p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
+                </div>
+              </div>
+              
+              <div class="list-group-item">
+                <div class="row-content">
+                  <div class="action-secondary"><a><i class="material-icons">mode edit</i></a></div>
+                  <p class="list-group-item-text">Maecenas sed diam eget risus varius blandit.</p>
+                </div>
+              </div>
+            </div>
+            <!--END ENVELOPES-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Tab ends here-->
 
-
-<h1> Dashboard Page </h1>
-
-
-<% include ./partials/footer %>
+    <!--start right container-->
+    <div class="col-md-8 pad">
+      <div class="well infobox">
+        <p><em>Material Design for Bootstrap</em> is a theme for Bootstrap 3 which lets you use the new Google Material Design in your favorite front-end framework.
+          <a href="http://fezvrasta.github.io/bootstrap-material-design/#dialog">Get Started Here</a> 
+        </p>
+      </div>
+    </div>
+    <!--end right container-->
+    <!--Add new envelop form dialog-->
+    <div id="complete-dialog" class="modal fade" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Add New Envelope</h4>
+            <small>Envelopes are stuffs you spend money on. Example: Groceries, Entertainment, Transportation, etc </small>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" id="envelope-form">
+              <fieldset>
+                <div class="form-group">
+                  <label for="envelope-name" class="col-md-2 control-label">Envelope Name</label>
+                  <div class="col-md-10">
+                    <input type="text" class="form-control" id="envelope-name" placeholder="Envelope Name" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="envelope-amt" class="col-md-2 control-label">Budget Amount</label>
+                  <div class="col-md-10">
+                    <input type="number" class="form-control" id="envelope-amt" placeholder="How much would you budget for this envelope in a month?" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="envelope-pr" class="col-md-2 control-label">Envelope Priority</label>
+                  <div class="col-md-10">
+                    <input type="number" class="form-control" id="envelope-pr" min="1" max="10" placeholder="How important is this envelope in relation to others? 1 - 10." required>
+                  </div>
+                </div>
+              </fieldset>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-raised btn-primary">Submit</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Dismiss</button>
+              </div>
+            </form>
+          </div>
+        
+        </div>
+      </div>
+    </div>
+    <!--add new envelope form dialog-->
+    <!--start footer-->
+    <footer class="page-footer fixed">
+      <div class="footer-copyright">
+        <div class="container">
+        © 2017 Ignatius Ukwuoma
+        <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+        </div>
+      </div>
+    </footer>
+    <!--end footer-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/javascripts/material.min.js"></script>
+    <script src="/javascripts/ripples.min.js"></script>
+    <script src="/javascripts/core.js"></script>
+  </body>
+</html>
