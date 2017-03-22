@@ -8,28 +8,36 @@
      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
      crossorigin="anonymous">
      <link rel="stylesheet" href="./stylesheets/style.css">
+     <link href="https://fonts.googleapis.com/css?family=Lato|Prata" rel="stylesheet">
      <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
   </head>
   <body>
-  <nav class="navbar">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-target">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/"> CoolBudget </a>
-      </div>
-      <div class="navbar-collapse collapse" id="nav-target">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a class="nav-link" id="home-nav" href="/">HOME</a></li>
-          <li><a class="nav-link" id="about-nav" href="/#about">ABOUT</a></li>
-          <li><a class="nav-link" id="signin-nav" href="/login">SIGN IN</a></li> 
-          <li><a class="nav-link" id="signup-nav" href="/login">SIGN UP</a></li>
-          <li><a class="nav-link" id="dashboard-nav" href="/pair">DASHBOARD</a></li>
-          <li><a class="nav-link" id="signout-nav">SIGN OUT</a></li>   
-        </ul>
-      </div>  
-    </div>
-  </nav>
+  <div class="header">
+		<div class="container">
+			<div class="header-nav">
+				<nav class="navbar navbar-default">
+					<div class="navbar-header">
+					  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-target">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+					  </button>
+						<div class="logo">
+							<h4><a class="navbar-brand" href="/">CoolBudget</a></h4>
+						</div>
+					</div>
+					<div class="collapse navbar-collapse" id="nav-target">
+							 <ul class="nav navbar-nav cl-effect-14">
+								<li><a href="/" id="home-nav" class="active">Home</a></li>
+								<li><a href="/#about" id="about-nav">About</a></li>
+								<li><a href="/signin" id="signin-nav">Sign In</a></li>
+								<li><a href="/signup" id="signup-nav">Sign Up</a></li>
+								<li><a href="/dashboard" id="dashboard-nav">Dashboard</a></li>
+								<li><a href="#" id="signout-nav">Sign Out</a></li>
+							  </ul>
+					</div>
+				</nav>
+			</div>
+		</div>
+	</div>

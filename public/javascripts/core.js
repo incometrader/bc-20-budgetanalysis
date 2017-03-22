@@ -24,17 +24,17 @@ window.onload = () => {
   function handleSignUp() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    let emailHelp = document.getElementById('email_help').textContent;
-    let passwordHelp = document.getElementById('password_help').textContent;
+    const emailHelp = document.getElementById('email_help');
+    const passwordHelp = document.getElementById('password_help');
 
     if (email.length < 6) {
-      passwordHelp = '';
-      emailHelp = 'Email should have up to 6 characters';
+      passwordHelp.textContent = '';
+      emailHelp.textContent = 'Email should have up to 6 characters';
       return false;
     }
     if (password.length < 6) {
-      emailHelp = '';
-      passwordHelp = 'Password should have up to 6 characters';
+      emailHelp.textContent = '';
+      passwordHelp.textContent = 'Password should have up to 6 characters';
       return false;
     }
     auth.createUserWithEmailAndPassword(email, password)
@@ -42,15 +42,16 @@ window.onload = () => {
         const errorCode = error.code;
         const errorMessage = error.message;
         if (errorCode === 'auth/weak-password') {
-          emailHelp = '';
-          passwordHelp = 'Password is too weak';
+          emailHelp.textContent = '';
+          passwordHelp.textContent = 'Password is too weak';
         } else {
-          passwordHelp = '';
-          emailHelp = errorMessage;
+          passwordHelp.textContent = '';
+          emailHelp.textContent = errorMessage;
         }
         console.log(error);
       });
   }
+  // Code to load for Signup page
   if (window.location.pathname === '/signup') {
     const signupForm = document.getElementById('register-form');
     signupForm.addEventListener('submit', (event) => {
@@ -60,4 +61,6 @@ window.onload = () => {
     const ui = new firebaseui.auth.AuthUI(firebase.auth());
     ui.start('#firebaseui-auth-container', uiConfig);
   }
+  // Code to load for Dashboard Page
+
 };
