@@ -133,6 +133,15 @@ window.onload = () => {
             name: envelopeName,
             amt: envelopeAmt,
             pr: envelopePr
+          }, (err) => {
+            if (err) {
+              document.getElementsById('danger-alert').style.display = 'block';
+              // document.getElementsByClassName('close')[0].click();
+              console.log(err);
+            } else {
+              document.getElementById('success-alert').style.display = 'block';
+              // document.getElementsByClassName('close')[0].click();
+            }
           });
         } else {
           console.log('No User');

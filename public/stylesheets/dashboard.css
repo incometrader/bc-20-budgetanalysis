@@ -52,5 +52,11 @@ footer.page-footer .footer-copyright {
 }
 #income h2 {
   display: inline-block; 
-  margin-top: 7px"
+  margin-top: 7px;
+}
+#success-alert {
+  display: none;
+}
+#danger-alert {
+  display: none;
 }
