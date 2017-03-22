@@ -33,7 +33,6 @@ window.onload = () => {
     auth.signOut().then(() => {
       window.localStorage.user = undefined;
       console.log('Signed Out');
-      alert('You have signed out');
       window.location = '/';
     }, (error) => {
       console.error('Sign Out Error', error);
@@ -88,7 +87,9 @@ window.onload = () => {
       console.log('No User');
     }
   });
-  document.getElementById('signout-nav').addEventListener('click', signOut);
+  if (window.location.pathname !== '/dashboard') {
+    document.getElementById('signout-nav').addEventListener('click', signOut);
+  }
   // const signoutNavs = document.getElementsByClassName('signout-nav');
   // for (let i = 0; i < signoutNavs.length; i += 1) {
   //   signoutNavs[i].addEventListener('click', signOut);
@@ -117,6 +118,26 @@ window.onload = () => {
   }
   // Code to load for Dashboard Page
   if (window.location.pathname === '/dashboard') {
-    // document.getElementById('logout-nav').addEventListener('click', signOut);
+    document.getElementById('logout-nav').addEventListener('click', signOut);
+    // Create New Envelope
+    const envelopeForm = document.getElementById('envelope-form');
+    envelopeForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          const userId = user.uid;
+          const envelopeName = document.getElementById('envelope-name').value;
+          const envelopeAmt = document.getElementById('envelope-amt').value;
+          const envelopePr = document.getElementById('envelope-pr').value;
+          database.ref('envelopes/').child(userId).push({
+            name: envelopeName,
+            amt: envelopeAmt,
+            pr: envelopePr
+          });
+        } else {
+          console.log('No User');
+        }
+      });
+    });
   }
 };
