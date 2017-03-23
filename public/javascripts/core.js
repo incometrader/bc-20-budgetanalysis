@@ -126,7 +126,7 @@ window.onload = () => {
     // Display Envelopes and User
     const envelopesList = document.getElementById('envelopes-para');
     const usersRef = database.ref('users');
-    const envelopesRef = database.ref('envelopes');
+    
     auth.onAuthStateChanged((user) => {
       if (user) {
         const userId = user.uid;
@@ -139,25 +139,28 @@ window.onload = () => {
         }, (error) => {
           console.log(`Error: ${error.code}`);
         });
-        envelopesRef.child(userId).on('value', (snapshot) => {
-          snapshot.forEach((data) => {
-            let amount = data.val().amt;
-            let priority = data.val().pr;
-            let name = data.val().name;
-            let envelope = document.createElement('div');
-            envelope.classList.add('list-group-item');
-            envelope.innerHTML = `<div class="row-content">
-                                    <div class="action-secondary"><a><i class="material-icons">mode edit</i></a></div>
-                                    <p class="list-group-item-text">${name}</p>
-                                    <p class="list-group-item-text">${amount}</p>
-                                  </div>`;
-            envelopesList.appendChild(envelope);
-            console.log(envelope);
-          });
-          console.log(snapshot.val());
-        }, (error) => {
-          console.log(`Error: ${error.code}`);
-        });
+        const envelopesRef = database.ref('envelopes/' + userId);
+        for (let i = 0; i < 11; i += 1) {
+          if (envelopesRef.child(i)) {
+            envelopesRef.child(i).once('value', (snapshot) => {
+              snapshot.forEach((data) => {
+                let amount = data.val().amt;
+                let priority = data.val().pr;
+                let name = data.val().name;
+                let envelope = document.createElement('div');
+                envelope.classList.add('list-group-item');
+                envelope.innerHTML = `<div class="row-content">
+                                        <div class="action-secondary"><a><i class="material-icons">mode edit</i></a></div>
+                                        <p class="list-group-item-text">${name}</p>
+                                        <p class="list-group-item-text">${amount}</p>
+                                      </div>`;
+                envelopesList.appendChild(envelope);
+              });
+            }, (error) => {
+              console.log(`Error: ${error.code}`);
+            });
+          }
+        }
       }
     });
 
@@ -171,10 +174,9 @@ window.onload = () => {
           const envelopeName = document.getElementById('envelope-name').value;
           const envelopeAmt = document.getElementById('envelope-amt').value;
           const envelopePr = document.getElementById('envelope-pr').value;
-          database.ref('envelopes/').child(userId).push({
+          database.ref('envelopes/' + userId).child(envelopePr).push({
             name: envelopeName,
-            amt: envelopeAmt,
-            pr: envelopePr
+            amt: envelopeAmt
           }, (err) => {
             if (err) {
               document.getElementsById('danger-alert').style.display = 'block';
