@@ -174,6 +174,8 @@ window.onload = () => {
           const envelopeName = document.getElementById('envelope-name').value;
           const envelopeAmt = document.getElementById('envelope-amt').value;
           const envelopePr = document.getElementById('envelope-pr').value;
+          localStorage.setItem('name', envelopeName);
+          localStorage.setItem('amt', envelopeAmt);
           database.ref('envelopes/' + userId).child(envelopePr).push({
             name: envelopeName,
             amt: envelopeAmt
@@ -186,6 +188,16 @@ window.onload = () => {
               document.getElementById('success-alert').style.display = 'block';
               document.getElementById('close-button').click();
               setTimeout(offAlert, 4000);
+              let envLocalName = localStorage.getItem('name');
+              let envLocalAmt = localStorage.getItem('amt');
+              let envLocal = document.createElement('div');
+              envLocal.classList.add('list-group-item');
+              envLocal.innerHTML = `<div class="row-content">
+                                      <div class="action-secondary"><a><i class="material-icons">mode edit</i></a></div>
+                                      <p class="list-group-item-text">${envLocalName}</p>
+                                      <p class="list-group-item-text">${envLocalAmt}</p>
+                                    </div>`;
+              envelopesList.appendChild(envLocal);
             }
           });
         } else {
