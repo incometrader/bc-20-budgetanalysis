@@ -78,6 +78,12 @@ window.onload = () => {
       }
     });
   }
+  function offAlert() {
+    if (document.getElementById('success-alert').style.display === 'block') {
+      document.getElementById('success-alert').style.display = 'none';
+    }
+    document.getElementById('danger-alert').style.display = 'none';
+  }
 
   auth.onAuthStateChanged((user) => {
     if (user) {
@@ -90,10 +96,8 @@ window.onload = () => {
   if (window.location.pathname !== '/dashboard') {
     document.getElementById('signout-nav').addEventListener('click', signOut);
   }
-  // const signoutNavs = document.getElementsByClassName('signout-nav');
-  // for (let i = 0; i < signoutNavs.length; i += 1) {
-  //   signoutNavs[i].addEventListener('click', signOut);
-  // }
+
+
   // Code to load for Signup page
   if (window.location.pathname === '/signup') {
     const signupForm = document.getElementById('register-form');
@@ -119,6 +123,44 @@ window.onload = () => {
   // Code to load for Dashboard Page
   if (window.location.pathname === '/dashboard') {
     document.getElementById('logout-nav').addEventListener('click', signOut);
+    // Display Envelopes and User
+    const envelopesList = document.getElementById('envelopes-para');
+    const usersRef = database.ref('users');
+    const envelopesRef = database.ref('envelopes');
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        const userId = user.uid;
+        usersRef.child(userId).on('value', (snapshot) => {
+          const username = snapshot.val().username;
+          const names = document.getElementsByClassName('user-name');
+          for (let i = 0; i < names.length; i += 1) {
+            names[i].textContent = username;
+          }
+        }, (error) => {
+          console.log(`Error: ${error.code}`);
+        });
+        envelopesRef.child(userId).on('value', (snapshot) => {
+          snapshot.forEach((data) => {
+            let amount = data.val().amt;
+            let priority = data.val().pr;
+            let name = data.val().name;
+            let envelope = document.createElement('div');
+            envelope.classList.add('list-group-item');
+            envelope.innerHTML = `<div class="row-content">
+                                    <div class="action-secondary"><a><i class="material-icons">mode edit</i></a></div>
+                                    <p class="list-group-item-text">${name}</p>
+                                    <p class="list-group-item-text">${amount}</p>
+                                  </div>`;
+            envelopesList.appendChild(envelope);
+            console.log(envelope);
+          });
+          console.log(snapshot.val());
+        }, (error) => {
+          console.log(`Error: ${error.code}`);
+        });
+      }
+    });
+
     // Create New Envelope
     const envelopeForm = document.getElementById('envelope-form');
     envelopeForm.addEventListener('submit', (event) => {
@@ -136,11 +178,12 @@ window.onload = () => {
           }, (err) => {
             if (err) {
               document.getElementsById('danger-alert').style.display = 'block';
-              // document.getElementsByClassName('close')[0].click();
-              console.log(err);
+              document.getElementById('close-button').click();
+              setTimeout(offAlert, 4000);
             } else {
               document.getElementById('success-alert').style.display = 'block';
-              // document.getElementsByClassName('close')[0].click();
+              document.getElementById('close-button').click();
+              setTimeout(offAlert, 4000);
             }
           });
         } else {
