@@ -4,47 +4,36 @@ footer.page-footer {
   bottom: 0;
   background-color: #f8f8f8;
 }
-
 footer.page-footer .footer-copyright {
   overflow: hidden;
   min-height: 50px;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
   align-items: center;
   padding: 10px 0px;
   color: rgba(000,000,000, 1.0);
   background-color: rgba(51,51,51,0.08);
 }
-
 .right {
   float: right !important;
 }
-
 .pad {
   padding-bottom: 50px;
 }
-
 .list-group .list-group-item .row-content {
   min-height: auto !important;
   margin: 0 0 10px 0;
   padding: 10px 0 10px 0;
   border-bottom: 1px solid #DDD
 }
-
 .list-group .list-group-item .row-content .action-secondary {
   right: 4px !important;
   top: 14px !important;
 }
-
 .list-group .list-group-item .row-content {
   width: -webkit-calc(100% - 0px) !important;
   width: calc(100% - 0px) !important;
 }
-
-#incomes-para, #envelopes-para {
+#envelopes-para {
   width: 100%;
   overflow-y: scroll;
   min-height: 430px !important;
@@ -60,3 +49,18 @@ footer.page-footer .footer-copyright {
 #danger-alert {
   display: none;
 }
+#success-alert2 {
+  display: none;
+}
+#danger-alert2 {
+  display: none;
+}
+#income #incomes-para span{
+  float: right;
+  color: green;
+}  
+#income #incomes-para p{
+  display: inline;
+  font-weight: bold;
+} 
+

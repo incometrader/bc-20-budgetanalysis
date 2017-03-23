@@ -123,6 +123,13 @@ window.onload = () => {
     }
     document.getElementById('danger-alert').style.display = 'none';
   }
+  // Off Income Added Notification
+  function offIncomeAlert() {
+    if (document.getElementById('success-alert2').style.display === 'block') {
+      document.getElementById('success-alert2').style.display = 'none';
+    }
+    document.getElementById('danger-alert2').style.display = 'none';
+  }
 
   auth.onAuthStateChanged((user) => {
     if (user) {
@@ -172,7 +179,69 @@ window.onload = () => {
   if (window.location.pathname === '/dashboard') {
     document.getElementById('logout-nav').addEventListener('click', signOut);
     // Add Income
-
+    // Create New Envelope
+    const incomeForm = document.getElementById('income-form');
+    incomeForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          const userId = user.uid;
+          const incomeName = document.getElementById('income-name').value;
+          const incomeAmt = document.getElementById('income-amt').value;
+          const incomeNotes = document.getElementById('income-notes').value;
+          // localStorage.setItem('name', incomeName);
+          // localStorage.setItem('amt', incomeAmt);
+          database.ref('incomes').child(userId).push({
+            name: incomeName,
+            amt: incomeAmt,
+            notes: incomeNotes
+          }, (err) => {
+            if (err) {
+              document.getElementsById('danger-alert2').style.display = 'block';
+              document.getElementById('close-button').click();
+              setTimeout(offIncomeAlert, 4000);
+            } else {
+              document.getElementById('success-alert2').style.display = 'block';
+              document.getElementById('close-button').click();
+              setTimeout(offIncomeAlert, 4000);
+              // const incLocalName = localStorage.getItem('name');
+              // const incLocalAmt = localStorage.getItem('amt');
+              // const incLocal = document.createElement('div');
+              // incLocal.classList.add('list-group-item');
+              // incLocal.innerHTML = `<div class="row-content">
+              //                         <div class="action-secondary"><a><i class="material-icons">mode edit</i></a></div>
+              //                         <p class="list-group-item-text">${incLocalName}</p>
+              //                         <p class="list-group-item-text">${incLocalAmt}</p>
+              //                       </div>`;
+              // incomesList.appendChild(incLocal);
+            }
+          });
+        } else {
+          console.log('No User');
+        }
+      });
+    });
+    // Display Income
+    const incomesList = document.getElementById('income-group');
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        const userId = user.uid;
+        const incomesRef = database.ref('incomes');
+        incomesRef.child(userId).on('value', (snapshot) => {
+          snapshot.forEach((data) => {
+            const amount = data.val().amt;
+            const name = data.val().name;
+            const income = document.createElement('div');
+            income.classList.add('panel-body');
+            income.setAttribute('id', 'incomes-para');
+            income.innerHTML = `<p>${name}</p><span>${amount}</span>`;
+            incomesList.appendChild(income);
+          });
+        }, (error) => {
+          console.log(`Error: ${error.code}`);
+        });
+      }
+    });
     // Display Envelopes and User
     const envelopesList = document.getElementById('envelopes-para');
     const usersRef = database.ref('users');
