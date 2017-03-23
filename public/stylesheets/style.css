@@ -191,6 +191,12 @@ a {
 #password_help {
   color: #CC3333;
 }
+#email_help2 {
+  color: #CC3333;
+}
+#password_help2 {
+  color: #CC3333;
+}
 .hr-red {
   border-top: 1px solid blue;
 }

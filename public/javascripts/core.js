@@ -171,10 +171,11 @@ window.onload = () => {
   // Code to load for Dashboard Page
   if (window.location.pathname === '/dashboard') {
     document.getElementById('logout-nav').addEventListener('click', signOut);
+    // Add Income
+
     // Display Envelopes and User
     const envelopesList = document.getElementById('envelopes-para');
     const usersRef = database.ref('users');
-    
     auth.onAuthStateChanged((user) => {
       if (user) {
         const userId = user.uid;
