@@ -78,6 +78,45 @@ window.onload = () => {
       }
     });
   }
+  // Sign In User
+  function handleSignIn() {
+    if (firebase.auth().currentUser) {
+      firebase.auth().signOut();
+    } else {
+      const email = document.getElementById('email2').value;
+      const password = document.getElementById('password2').value;
+      const emailHelp = document.getElementById('email_help2');
+      const passwordHelp = document.getElementById('password_help2');
+      if (email.length < 6) {
+        passwordHelp.textContent = '';
+        emailHelp.textContent = 'Please enter an email address.';
+        return false;
+      }
+      if (password.length < 6) {
+        emailHelp.textContent = '';
+        passwordHelp.textContent = 'Please enter a correct password';
+        return false;
+      }
+      auth.signInWithEmailAndPassword(email, password).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode === 'auth/wrong-password') {
+          emailHelp.textContent = '';
+          passwordHelp.textContent = 'Wrong password';
+        } else {
+          passwordHelp.textContent = '';
+          emailHelp.textContent = errorMessage;
+        }
+        console.log(error);
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            window.location.pathname = '/dashboard';
+          }
+        });
+      });
+    }
+  }
+  // Off Envelope Added Notification
   function offAlert() {
     if (document.getElementById('success-alert').style.display === 'block') {
       document.getElementById('success-alert').style.display = 'none';
@@ -96,7 +135,16 @@ window.onload = () => {
   if (window.location.pathname !== '/dashboard') {
     document.getElementById('signout-nav').addEventListener('click', signOut);
   }
-
+  // Code to load for Signin page
+  if (window.location.pathname === '/signin') {
+    const signinForm = document.getElementById('login-form');
+    signinForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      handleSignIn();
+    });
+    const ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
+  }
 
   // Code to load for Signup page
   if (window.location.pathname === '/signup') {
