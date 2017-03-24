@@ -14,14 +14,6 @@ window.onload = () => {
   const database = firebase.database();
   const auth = firebase.auth();
 
-   // Function to write User Data to Database
-  function writeUserData(uid, fname, email) {
-    database.ref('users/').child(uid).set({
-      username: fname,
-      email,
-    });
-  }
-
   // Firebase UI Object for Google and Facebook Sign In
   const uiConfig = {
     signInFlow: 'popup',
@@ -32,6 +24,14 @@ window.onload = () => {
     ],
     tosUrl: '/',
   };
+
+  // Function to write User Data to Database
+  function writeUserData(uid, fname, email) {
+    database.ref('users/').child(uid).set({
+      username: fname,
+      email,
+    });
+  }
 
   // Store user info on Local Storage
   function storeUserInfo(uid, username, email) {
@@ -46,10 +46,10 @@ window.onload = () => {
       window.localStorage.removeItem('user');
       window.localStorage.removeItem('email');
       window.localStorage.removeItem('username');
-      console.log('Signed Out');
       window.location = '/';
     });
   }
+
   // Function to Sign Up User
   function handleSignUp() {
     const username = document.getElementById('fname').value;
@@ -70,11 +70,13 @@ window.onload = () => {
       emailHelp.textContent = 'Email should have up to 6 characters';
       return false;
     }
+
     if (password.length < 6) {
       emailHelp.textContent = '';
       passwordHelp.textContent = 'Password should have up to 6 characters';
       return false;
     }
+
     auth.createUserWithEmailAndPassword(email, password)
       .catch((error) => {
         const errorCode = error.code;
@@ -87,6 +89,7 @@ window.onload = () => {
           emailHelp.textContent = errorMessage;
         }
       });
+
     auth.onAuthStateChanged((user) => {
       if (user) {
         const uid = user.uid;
@@ -97,7 +100,7 @@ window.onload = () => {
     });
   }
 
-  // Sign In User
+  // Function to Sign In User
   function handleSignIn() {
     if (firebase.auth().currentUser) {
       firebase.auth().signOut();
@@ -106,16 +109,19 @@ window.onload = () => {
       const password = document.getElementById('password2').value;
       const emailHelp = document.getElementById('email_help2');
       const passwordHelp = document.getElementById('password_help2');
+
       if (email.length < 6) {
         passwordHelp.textContent = '';
         emailHelp.textContent = 'Please enter an email address.';
         return false;
       }
+
       if (password.length < 6) {
         emailHelp.textContent = '';
         passwordHelp.textContent = 'Please enter a correct password';
         return false;
       }
+
       auth.signInWithEmailAndPassword(email, password)
         .catch((error) => {
           const errorCode = error.code;
@@ -127,8 +133,8 @@ window.onload = () => {
             passwordHelp.textContent = '';
             emailHelp.textContent = errorMessage;
           }
-          console.log(error);
         });
+
       auth.onAuthStateChanged((user) => {
         if (user) {
           const uid = user.uid;
@@ -144,6 +150,7 @@ window.onload = () => {
     }
   }
 
+ // Check if User is Logged In
   function isLoggedIn() {
     const signIn = document.getElementById('signin-nav');
     const signUp = document.getElementById('signup-nav');
@@ -169,6 +176,7 @@ window.onload = () => {
     }
     document.getElementById('danger-alert').style.display = 'none';
   }
+
   // Off Income Added Notification
   function offIncomeAlert() {
     if (document.getElementById('success-alert2').style.display === 'block') {
@@ -177,27 +185,9 @@ window.onload = () => {
     document.getElementById('danger-alert2').style.display = 'none';
   }
 
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      console.log('User is signed in');
-      console.log(user);
-    } else {
-      console.log('No User');
-    }
-  });
   if (window.location.pathname !== '/dashboard') {
     document.getElementById('signout-nav').addEventListener('click', signOut);
     isLoggedIn();
-  }
-  // Code to load for Signin page
-  if (window.location.pathname === '/signin') {
-    const signinForm = document.getElementById('login-form');
-    signinForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      handleSignIn();
-    });
-    const ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', uiConfig);
   }
 
   // Get Total Income
@@ -218,12 +208,11 @@ window.onload = () => {
             budgetReport.textContent = 'You have not added your income';
           }
           return sumTotal;
-        }, (error) => {
-          console.log(`Error: ${error.code}`);
         });
       }
     });
   }
+
   // Get Total Envelope
   function totalEnvelope() {
     auth.onAuthStateChanged((user) => {
@@ -249,6 +238,7 @@ window.onload = () => {
     });
   }
 
+  // Function to Analyse Budget
   function analyseBudget() {
     const income = document.getElementById('total-income');
     const envelope = document.getElementById('total-envelope');
@@ -258,15 +248,7 @@ window.onload = () => {
     console.log(`Envelope ${typeof envelopeVal} ${envelopeVal}`);
   }
 
-    // Code to load for Signup page
-  if (window.location.pathname === '/signup') {
-    const signupForm = document.getElementById('register-form');
-    signupForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      handleSignUp();
-    });
-    const ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', uiConfig);
+  function writeStore() {
     auth.onAuthStateChanged((user) => {
       if (user) {
         const name = user.displayName;
@@ -275,10 +257,31 @@ window.onload = () => {
         const uid = user.uid;
         writeUserData(uid, username, email);
         storeUserInfo(uid, username, email);
-      } else {
-        console.log('User is signed out');
       }
     });
+  }
+
+  // Code to load for Signin page
+  if (window.location.pathname === '/signin') {
+    const signinForm = document.getElementById('login-form');
+    signinForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      handleSignIn();
+    });
+    const ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
+  }
+
+  // Code to load for Signup page
+  if (window.location.pathname === '/signup') {
+    const signupForm = document.getElementById('register-form');
+    signupForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      handleSignUp();
+    });
+    const ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
+    writeStore();
   }
 
   // Code to load for Dashboard Page
@@ -290,6 +293,7 @@ window.onload = () => {
     document.getElementById('envelope-btn').addEventListener('click', () => {
       document.getElementById('add-envelope').click();
     });
+
     // Analyse Budget
     totalIncome();
     totalEnvelope();
@@ -328,11 +332,10 @@ window.onload = () => {
               document.getElementById('income-group').appendChild(incLocal);
             }
           });
-        } else {
-          console.log('No User');
         }
       });
     });
+
     // Display Income
     const incomesList = document.getElementById('income-group');
     auth.onAuthStateChanged((user) => {
@@ -354,27 +357,27 @@ window.onload = () => {
         });
       }
     });
+
     // Display User
     const username = localStorage.getItem('username');
     const names = document.getElementsByClassName('user-name');
     for (let i = 0; i < names.length; i += 1) {
       names[i].textContent = username;
     }
+
     // Display Envelopes
     const envelopesList = document.getElementById('envelopes-para');
-    const usersRef = database.ref('users');
     auth.onAuthStateChanged((user) => {
       if (user) {
         const userId = user.uid;
-        const envelopesRef = database.ref('envelopes/' + userId);
+        const envelopesRef = database.ref(`envelopes/${userId}`);
         for (let i = 0; i < 11; i += 1) {
           if (envelopesRef.child(i)) {
             envelopesRef.child(i).once('value', (snapshot) => {
               snapshot.forEach((data) => {
-                let amount = data.val().amt;
-                let priority = data.val().pr;
-                let name = data.val().name;
-                let envelope = document.createElement('div');
+                const amount = data.val().amt;
+                const name = data.val().name;
+                const envelope = document.createElement('div');
                 envelope.classList.add('list-group-item');
                 envelope.innerHTML = `<div class="row-content">
                                         <div class="action-secondary"><a><i class="material-icons">mode edit</i></a></div>
@@ -383,8 +386,6 @@ window.onload = () => {
                                       </div>`;
                 envelopesList.appendChild(envelope);
               });
-            }, (error) => {
-              console.log(`Error: ${error.code}`);
             });
           }
         }
@@ -403,7 +404,7 @@ window.onload = () => {
           const envelopePr = document.getElementById('envelope-pr').value;
           localStorage.setItem('name', envelopeName);
           localStorage.setItem('amt', envelopeAmt);
-          database.ref('envelopes/' + userId).child(envelopePr).push({
+          database.ref(`envelopes/${userId}`).child(envelopePr).push({
             name: envelopeName,
             amt: envelopeAmt
           }, (err) => {
@@ -427,8 +428,6 @@ window.onload = () => {
               envelopesList.appendChild(envLocal);
             }
           });
-        } else {
-          console.log('No User');
         }
       });
     });
