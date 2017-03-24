@@ -1,19 +1,27 @@
 {
-  "name": "project",
-  "version": "0.0.0",
+  "name": "budget_analysis_application",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "jasmine"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/incometrader/bc-20-budgetanalysis.git"
+  },
+  "author": "Ignatius Ukwuoma",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/incometrader/bc-20-budgetanalysis/issues"
+  },
+  "homepage": "https://github.com/incometrader/bc-20-budgetanalysis#readme",
   "dependencies": {
     "body-parser": "~1.16.0",
-    "cookie-parser": "~1.4.3",
     "debug": "~2.6.0",
     "dotenv": "^4.0.0",
     "ejs": "~2.5.5",
-    "express": "~4.14.1",
-    "morgan": "~1.7.0",
-    "serve-favicon": "~2.3.2"
+    "express": "~4.14.1"
   },
   "devDependencies": {
     "eslint": "^3.18.0",
