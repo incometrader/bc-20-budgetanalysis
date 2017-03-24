@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 /* GET Dashboard page. */
-router.get('/', function(req, res) {
-  res.render('dashboard');
+router.get('/', (req, res) => {
+  res.render('dashboard', { title: 'Dashboard' });
 });
 
 module.exports = router;

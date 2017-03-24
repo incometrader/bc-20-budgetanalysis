@@ -1,6 +1,7 @@
 window.onload = () => {
   let sumTotal = 0;
   let sumEnvelope = 0;
+
   // Initialize Firebase
   const config = {
     apiKey: 'AIzaSyBRWkuFbnDnlBlmJqywQRFhJ763d50h7tM',
@@ -10,9 +11,17 @@ window.onload = () => {
     messagingSenderId: '400310004398',
   };
   firebase.initializeApp(config);
-  // Reference for Firebase Services
   const database = firebase.database();
   const auth = firebase.auth();
+
+   // Function to write User Data to Database
+  function writeUserData(uid, fname, email) {
+    database.ref('users/').child(uid).set({
+      username: fname,
+      email,
+    });
+  }
+
   // Firebase UI Object for Google and Facebook Sign In
   const uiConfig = {
     signInFlow: 'popup',
@@ -23,30 +32,38 @@ window.onload = () => {
     ],
     tosUrl: '/',
   };
-  // Function to write User Data to Database
-  function writeUserData(uid, fname, email) {
-    database.ref('users/').child(uid).set({
-      username: fname,
-      email,
-    });
+
+  // Store user info on Local Storage
+  function storeUserInfo(uid, username, email) {
+    window.localStorage.setItem('user', uid);
+    window.localStorage.setItem('email', email);
+    window.localStorage.setItem('username', username);
   }
+
   // Function to Sign Out User
   function signOut() {
     auth.signOut().then(() => {
-      window.localStorage.user = undefined;
+      window.localStorage.removeItem('user');
+      window.localStorage.removeItem('email');
+      window.localStorage.removeItem('username');
       console.log('Signed Out');
       window.location = '/';
-    }, (error) => {
-      console.error('Sign Out Error', error);
     });
   }
   // Function to Sign Up User
   function handleSignUp() {
-    const fname = document.getElementById('fname').value;
+    const username = document.getElementById('fname').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const usernameHelp = document.getElementById('fname_help');
     const emailHelp = document.getElementById('email_help');
     const passwordHelp = document.getElementById('password_help');
+
+    if (username.length < 2) {
+      usernameHelp.textContent = 'Please enter a valid username';
+    } else {
+      usernameHelp.textContent = '';
+    }
 
     if (email.length < 6) {
       passwordHelp.textContent = '';
@@ -73,13 +90,13 @@ window.onload = () => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         const uid = user.uid;
-        writeUserData(uid, fname, email);
+        writeUserData(uid, username, email);
+        storeUserInfo(uid, username, email);
         window.location.pathname = '/dashboard';
-      } else {
-        console.log('User is signed out');
       }
     });
   }
+
   // Sign In User
   function handleSignIn() {
     if (firebase.auth().currentUser) {
@@ -118,6 +135,25 @@ window.onload = () => {
       });
     }
   }
+
+  function isLoggedIn() {
+    const signIn = document.getElementById('signin-nav');
+    const signUp = document.getElementById('signup-nav');
+    const logOut = document.getElementById('signout-nav');
+    const dash = document.getElementById('dashboard-nav');
+    if (window.localStorage.user) {
+      signIn.style.display = 'none';
+      signUp.style.display = 'none';
+      logOut.style.display = 'block';
+      dash.style.display = 'block';
+    } else {
+      signIn.style.display = 'block';
+      signUp.style.display = 'block';
+      logOut.style.display = 'none';
+      dash.style.display = 'none';
+    }
+  }
+
   // Off Envelope Added Notification
   function offAlert() {
     if (document.getElementById('success-alert').style.display === 'block') {
@@ -143,6 +179,7 @@ window.onload = () => {
   });
   if (window.location.pathname !== '/dashboard') {
     document.getElementById('signout-nav').addEventListener('click', signOut);
+    isLoggedIn();
   }
   // Code to load for Signin page
   if (window.location.pathname === '/signin') {
@@ -155,27 +192,6 @@ window.onload = () => {
     ui.start('#firebaseui-auth-container', uiConfig);
   }
 
-  // Code to load for Signup page
-  if (window.location.pathname === '/signup') {
-    const signupForm = document.getElementById('register-form');
-    signupForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      handleSignUp();
-    });
-    const ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', uiConfig);
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        const name = user.displayName;
-        const username = name.match(/\w+(?=\s)/)[0];
-        const email = user.email;
-        const uid = user.uid;
-        writeUserData(uid, username, email);
-      } else {
-        console.log('User is signed out');
-      }
-    });
-  }
   // Get Total Income
   function totalIncome() {
     auth.onAuthStateChanged((user) => {
@@ -191,7 +207,7 @@ window.onload = () => {
           incomeTotal.textContent = sumTotal;
           if (sumTotal === 0) {
             const budgetReport = document.getElementById('budget-report');
-            budgetReport.textContent = 'Please add your income';
+            budgetReport.textContent = 'You have not added your income';
           }
           return sumTotal;
         }, (error) => {
@@ -234,9 +250,38 @@ window.onload = () => {
     console.log(`Envelope ${typeof envelopeVal} ${envelopeVal}`);
   }
 
+    // Code to load for Signup page
+  if (window.location.pathname === '/signup') {
+    const signupForm = document.getElementById('register-form');
+    signupForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      handleSignUp();
+    });
+    const ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        const name = user.displayName;
+        const username = name.match(/\w+(?=\s)/)[0];
+        const email = user.email;
+        const uid = user.uid;
+        writeUserData(uid, username, email);
+        storeUserInfo(uid, username, email);
+      } else {
+        console.log('User is signed out');
+      }
+    });
+  }
+
   // Code to load for Dashboard Page
   if (window.location.pathname === '/dashboard') {
     document.getElementById('logout-nav').addEventListener('click', signOut);
+    document.getElementById('income-btn').addEventListener('click', () => {
+      document.getElementById('add-income').click();
+    });
+    document.getElementById('envelope-btn').addEventListener('click', () => {
+      document.getElementById('add-envelope').click();
+    });
     // Analyse Budget
     totalIncome();
     totalEnvelope();
@@ -251,6 +296,8 @@ window.onload = () => {
           const incomeName = document.getElementById('income-name').value;
           const incomeAmt = document.getElementById('income-amt').value;
           const incomeNotes = document.getElementById('income-notes').value;
+          localStorage.setItem('income', incomeName);
+          localStorage.setItem('amount', incomeAmt);
           database.ref('incomes').child(userId).push({
             name: incomeName,
             amt: incomeAmt,
@@ -264,6 +311,13 @@ window.onload = () => {
               document.getElementById('success-alert2').style.display = 'block';
               document.getElementById('close-button-income').click();
               setTimeout(offIncomeAlert, 4000);
+              const incLocalName = localStorage.getItem('income');
+              const incLocalAmt = localStorage.getItem('amount');
+              const incLocal = document.createElement('div');
+              incLocal.classList.add('panel-body');
+              incLocal.setAttribute('id', 'incomes-para');
+              incLocal.innerHTML = `<p>${incLocalName}</p><span>${incLocalAmt}</span>`;
+              document.getElementById('income-group').appendChild(incLocal);
             }
           });
         } else {
@@ -277,7 +331,7 @@ window.onload = () => {
       if (user) {
         const userId = user.uid;
         const incomesRef = database.ref('incomes');
-        incomesRef.child(userId).on('value', (snapshot) => {
+        incomesRef.child(userId).once('value', (snapshot) => {
           snapshot.forEach((data) => {
             const amount = data.val().amt;
             const name = data.val().name;
@@ -292,21 +346,18 @@ window.onload = () => {
         });
       }
     });
-    // Display Envelopes and User
+    // Display User
+    const username = localStorage.getItem('username');
+    const names = document.getElementsByClassName('user-name');
+    for (let i = 0; i < names.length; i += 1) {
+      names[i].textContent = username;
+    }
+    // Display Envelopes
     const envelopesList = document.getElementById('envelopes-para');
     const usersRef = database.ref('users');
     auth.onAuthStateChanged((user) => {
       if (user) {
         const userId = user.uid;
-        usersRef.child(userId).on('value', (snapshot) => {
-          const username = snapshot.val().username;
-          const names = document.getElementsByClassName('user-name');
-          for (let i = 0; i < names.length; i += 1) {
-            names[i].textContent = username;
-          }
-        }, (error) => {
-          console.log(`Error: ${error.code}`);
-        });
         const envelopesRef = database.ref('envelopes/' + userId);
         for (let i = 0; i < 11; i += 1) {
           if (envelopesRef.child(i)) {
@@ -356,9 +407,9 @@ window.onload = () => {
               document.getElementById('success-alert').style.display = 'block';
               document.getElementById('close-button').click();
               setTimeout(offAlert, 4000);
-              let envLocalName = localStorage.getItem('name');
-              let envLocalAmt = localStorage.getItem('amt');
-              let envLocal = document.createElement('div');
+              const envLocalName = localStorage.getItem('name');
+              const envLocalAmt = localStorage.getItem('amt');
+              const envLocal = document.createElement('div');
               envLocal.classList.add('list-group-item');
               envLocal.innerHTML = `<div class="row-content">
                                       <div class="action-secondary"><a><i class="material-icons">mode edit</i></a></div>

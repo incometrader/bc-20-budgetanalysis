@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 /* GET Sign In page. */
-router.get('/', function(req, res) {
-  res.render('signin');
+router.get('/', (req, res) => {
+  res.render('signin', { title: 'Sign In' });
 });
 
 module.exports = router;

@@ -34,9 +34,9 @@
                Hi, <span class="user-name"></span>
                 <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="#">Add Income</a></li>
-                <li><a href="#">Add Envelope</a></li>
-                <li><a href="#">Add Transaction</a></li>
+                <li><a href="#" id="income-btn">Add Income</a></li>
+                <li><a href="#" id="envelope-btn">Add Envelope</a></li>
+                <li><a href="#" id="transaction-btn">Add Transaction</a></li>
                 <li class="divider"></li>
                 <li><a href="#" id="logout-nav">Logout</a></li>
               </ul>
@@ -58,7 +58,7 @@
         </ul>
         <div id="myTabContent" class="tab-content">
           <div class="tab-pane fade active in" id="income">
-            <p><button class="btn btn-raised btn-success btn-sm right" data-toggle="modal" data-target="#create-income">Add Income</button></p>
+            <p><button class="btn btn-raised btn-success btn-sm right" data-toggle="modal" data-target="#create-income" id="add-income">Add Income</button></p>
             <h2>Hi, <span class="user-name"></span></h2>
             <div class="panel panel-primary" id="income-group">
               <div class="panel-heading">
@@ -69,7 +69,7 @@
             </div>
           </div>
           <div class="tab-pane fade" id="envelopes">
-            <p><button class="btn btn-raised btn-warning btn-sm right" data-toggle="modal" data-target="#create-envelope">Add Envelope</button></p>
+            <p><button class="btn btn-raised btn-warning btn-sm right" data-toggle="modal" data-target="#create-envelope" id="add-envelope">Add Envelope</button></p>
             <!--START ENVELOPES-->
             <div id="envelopes-para" class="list-group">
           
@@ -84,8 +84,8 @@
               </div>
               <!--START BUDGET-->
               <div class="panel-body" id="budget-body">
-                <p>Total Income: <span id="total-income"></span></p>
-                <p>Total Budget: <span id="total-envelope"></span></p>
+                <p>Total Income:</p><span id="total-income"></span> <br>
+                <p>Total Budget:</p><span id="total-envelope"></span>
               </div>
               <!--END BUDGET-->
             </div>
@@ -115,9 +115,18 @@
         <strong>Oh snap! </strong>There was a problem with adding the income.
       </div>
       <div class="well infobox">
-        <p><em>Transactions</em>
-          
-        </p>
+        <div id="transactions-well">
+          <p>TRANSACTIONS</p>
+          <p><img src="/images/plus.png"><a href="#"> Add New Transaction</a></p>
+          <ul>
+            <li> Import Bank Transactions </li>
+            <li> Export CSV </li>
+          </ul>
+        </div>
+        <form>
+          <input type="text" id="search-bar" placeholder="Search Transactions....">
+          <button> Search </button>
+        </form>
       </div>
     </div>
     <!--end right container-->

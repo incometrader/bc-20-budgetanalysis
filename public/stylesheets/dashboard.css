@@ -63,4 +63,43 @@ footer.page-footer .footer-copyright {
   display: inline;
   font-weight: bold;
 } 
-
+#total-income {
+  float: right;
+  color: green;
+}  
+#budget-body p {
+  display: inline;
+  font-weight: bold;
+  line-height: 30px;
+} 
+#total-envelope {
+  float: right;
+  color: orangered;
+}
+#transactions-well {
+  display: flex;
+  justify-content: space-between;
+}
+#transactions-well ul {
+  display: flex;
+  cursor: pointer;
+  color: dimgray;
+  font-size: 12px;
+  list-style-type: none;
+}
+#transactions-well li {
+  margin-right: 4px;
+  text-decoration: underline;
+}
+#transactions-well p {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+#transactions-well img {
+  height: 30px;
+}
+input#search-bar{
+  border-radius: 5px;
+  width: 200px;
+  border: 1px solid #D0CFCE;
+ }
