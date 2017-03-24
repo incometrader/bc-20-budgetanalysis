@@ -4,14 +4,15 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
 const index = require('./routes/index');
-const users = require('./routes/users');
 const dashboard = require('./routes/dashboard');
 const signin = require('./routes/signin');
 const signup = require('./routes/signup');
 
 const app = express();
+dotenv.config();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,7 +27,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/users', users);
 app.use('/dashboard', dashboard);
 app.use('/signin', signin);
 app.use('/signup', signup);

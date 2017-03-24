@@ -116,22 +116,30 @@ window.onload = () => {
         passwordHelp.textContent = 'Please enter a correct password';
         return false;
       }
-      auth.signInWithEmailAndPassword(email, password).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        if (errorCode === 'auth/wrong-password') {
-          emailHelp.textContent = '';
-          passwordHelp.textContent = 'Wrong password';
-        } else {
-          passwordHelp.textContent = '';
-          emailHelp.textContent = errorMessage;
-        }
-        console.log(error);
-        auth.onAuthStateChanged((user) => {
-          if (user) {
-            window.location.pathname = '/dashboard';
+      auth.signInWithEmailAndPassword(email, password)
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          if (errorCode === 'auth/wrong-password') {
+            emailHelp.textContent = '';
+            passwordHelp.textContent = 'Wrong password';
+          } else {
+            passwordHelp.textContent = '';
+            emailHelp.textContent = errorMessage;
           }
+          console.log(error);
         });
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          const uid = user.uid;
+          const userRef = database.ref('users');
+          userRef.child(uid).once('value', (snapshot) => {
+            const mail = snapshot.val().email;
+            const username = snapshot.val().username;
+            storeUserInfo(uid, username, mail);
+            window.location.pathname = '/dashboard';
+          });
+        }
       });
     }
   }
