@@ -1,4 +1,6 @@
 window.onload = () => {
+  let sumTotal = 0;
+  let sumEnvelope = 0;
   // Initialize Firebase
   const config = {
     apiKey: 'AIzaSyBRWkuFbnDnlBlmJqywQRFhJ763d50h7tM',
@@ -25,7 +27,7 @@ window.onload = () => {
   function writeUserData(uid, fname, email) {
     database.ref('users/').child(uid).set({
       username: fname,
-      email
+      email,
     });
   }
   // Function to Sign Out User
@@ -167,7 +169,6 @@ window.onload = () => {
         const name = user.displayName;
         const username = name.match(/\w+(?=\s)/)[0];
         const email = user.email;
-        const emailVerified = user.emailVerified;
         const uid = user.uid;
         writeUserData(uid, username, email);
       } else {
@@ -175,11 +176,72 @@ window.onload = () => {
       }
     });
   }
+  // Get Total Income
+  function totalIncome() {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        const userId = user.uid;
+        const incomeRef = database.ref('incomes');
+        return incomeRef.child(userId).once('value', (snapshot) => {
+          snapshot.forEach((data) => {
+            const amount = data.val().amt;
+            sumTotal += +amount;
+          });
+          const incomeTotal = document.getElementById('total-income');
+          incomeTotal.textContent = sumTotal;
+          if (sumTotal === 0) {
+            const budgetReport = document.getElementById('budget-report');
+            budgetReport.textContent = 'Please add your income';
+          }
+          return sumTotal;
+        }, (error) => {
+          console.log(`Error: ${error.code}`);
+        });
+      }
+    });
+  }
+  // Get Total Envelope
+  function totalEnvelope() {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        const userId = user.uid;
+        const envelopeRef = database.ref('envelopes/' + userId);
+        for (let i = 0; i < 11; i += 1) {
+          if (envelopeRef.child(i)) {
+            envelopeRef.child(i).once('value', (snapshot) => {
+              snapshot.forEach((data) => {
+                const amount = data.val().amt;
+                sumEnvelope += +amount;
+              });
+              const envelopeTotal = document.getElementById('total-envelope');
+              envelopeTotal.textContent = sumEnvelope;
+              return sumEnvelope;
+            }, (error) => {
+              console.log(`Error: ${error.code}`);
+            });
+          }
+        }
+      }
+    });
+  }
+
+  function analyseBudget() {
+    const income = document.getElementById('total-income');
+    const envelope = document.getElementById('total-envelope');
+    const incomeVal = parseInt(income.textContent, 10);
+    const envelopeVal = parseInt(envelope.textContent, 10);
+    console.log(`Income ${typeof incomeVal} ${incomeVal}`);
+    console.log(`Envelope ${typeof envelopeVal} ${envelopeVal}`);
+  }
+
   // Code to load for Dashboard Page
   if (window.location.pathname === '/dashboard') {
     document.getElementById('logout-nav').addEventListener('click', signOut);
+    // Analyse Budget
+    totalIncome();
+    totalEnvelope();
+
     // Add Income
-    // Create New Envelope
     const incomeForm = document.getElementById('income-form');
     incomeForm.addEventListener('submit', (event) => {
       event.preventDefault();
@@ -189,8 +251,6 @@ window.onload = () => {
           const incomeName = document.getElementById('income-name').value;
           const incomeAmt = document.getElementById('income-amt').value;
           const incomeNotes = document.getElementById('income-notes').value;
-          // localStorage.setItem('name', incomeName);
-          // localStorage.setItem('amt', incomeAmt);
           database.ref('incomes').child(userId).push({
             name: incomeName,
             amt: incomeAmt,
@@ -198,22 +258,12 @@ window.onload = () => {
           }, (err) => {
             if (err) {
               document.getElementsById('danger-alert2').style.display = 'block';
-              document.getElementById('close-button').click();
+              document.getElementById('close-button-income').click();
               setTimeout(offIncomeAlert, 4000);
             } else {
               document.getElementById('success-alert2').style.display = 'block';
-              document.getElementById('close-button').click();
+              document.getElementById('close-button-income').click();
               setTimeout(offIncomeAlert, 4000);
-              // const incLocalName = localStorage.getItem('name');
-              // const incLocalAmt = localStorage.getItem('amt');
-              // const incLocal = document.createElement('div');
-              // incLocal.classList.add('list-group-item');
-              // incLocal.innerHTML = `<div class="row-content">
-              //                         <div class="action-secondary"><a><i class="material-icons">mode edit</i></a></div>
-              //                         <p class="list-group-item-text">${incLocalName}</p>
-              //                         <p class="list-group-item-text">${incLocalAmt}</p>
-              //                       </div>`;
-              // incomesList.appendChild(incLocal);
             }
           });
         } else {
